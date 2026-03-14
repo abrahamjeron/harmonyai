@@ -10,6 +10,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google/adk": "^0.5.0",
     "framer-motion": "^12.35.2",
     "next": "16.1.6",
     "react": "19.2.3",
@@ -17,6 +18,7 @@
     "synth-audio": "^0.2.0"
   },
   "devDependencies": {
+    "@google/adk-devtools": "^0.5.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

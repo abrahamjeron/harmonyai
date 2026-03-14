@@ -61,6 +61,24 @@ export default function AudioPlayer({ tracks }: AudioPlayerProps) {
     setProgress(Number(e.target.value));
   };
 
+  const handleDownload = async () => {
+    if (!currentTrack) return;
+    try {
+      const response = await fetch(currentTrack.url);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${currentTrack.section}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
+  };
+
   const fmt = (s: number) =>
     `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 
@@ -132,13 +150,28 @@ export default function AudioPlayer({ tracks }: AudioPlayerProps) {
             value={progress}
             onChange={handleSeek}
             className="h-1.5 w-full cursor-pointer appearance-none rounded-full
-              bg-white/15 accent-violet-500"
+              bg-white/15 accent-violet-500 hover:accent-violet-400 transition-colors"
           />
           <div className="flex justify-between text-[10px] text-white/40 font-mono">
             <span>{fmt(progress)}</span>
             <span>{fmt(duration)}</span>
           </div>
         </div>
+
+        {/* Download button */}
+        <button
+          onClick={handleDownload}
+          disabled={!currentTrack}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full
+            bg-white/10 text-white/60 hover:bg-white/20 hover:text-white/80 
+            disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          aria-label="Download as MP3"
+          title="Download as MP3"
+        >
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+        </button>
       </div>
     </GlassCard>
   );
